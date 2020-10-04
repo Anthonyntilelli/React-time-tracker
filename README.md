@@ -1,2 +1,22 @@
 # React-time-tracker
-React/Redux project for Flatiron
+
+ React/Redux project for Flatiron.
+ Project implements a subset of employee time tracking system.
+
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
