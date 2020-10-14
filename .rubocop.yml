@@ -6,6 +6,13 @@ AllCops:
   - bin/*
   - tmp/*
 
+# Modifications
+Metrics/AbcSize:
+  Max: 19
+Metrics/MethodLength:
+  Max: 15
+
+
 # Opt In Cops
 Layout/BeginEndAlignment: # (new in 0.91)
   Enabled: true
