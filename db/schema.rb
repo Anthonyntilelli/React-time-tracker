@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 2020_10_13_033412) do
     t.boolean "active", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_employees_on_name", unique: true
   end
 
   create_table "ptos", force: :cascade do |t|

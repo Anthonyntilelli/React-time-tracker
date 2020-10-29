@@ -9,9 +9,11 @@ class Employee < ApplicationRecord
 
   has_secure_password
 
-  before_validation :normalize_name, on: %i[create update]
+  before_validation :normalize_provided_name, on: %i[create update]
 
-  validates :name, presence: true, format: { with: /[A-Za-z]+\s[A-Za-z]+/, message: 'must be First and Last name' }
+  validates :name, presence: true,
+                   format: { with: /[A-Za-z]+\s[A-Za-z]+/, message: 'must be First and Last name' }, uniqueness: true
+
   # has secure password is limited to 72 bytes max
   validates :password, presence: true, length: { in: 8..72 }, if: -> { password_digest_changed? }
   validates :pto_rate, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -28,6 +30,10 @@ class Employee < ApplicationRecord
     # Create hire admin event
     new_employee.admin_events.create!(admin: -1, action: 'Hire', reason: 'Initial Hire')
     new_employee
+  end
+
+  def self.normalize_name(name)
+    name.strip.downcase.titleize
   end
 
   # Calculates Pay hours and makes clock events as paid
@@ -114,8 +120,8 @@ class Employee < ApplicationRecord
 
   private
 
-  def normalize_name
-    self.name = name.strip.downcase.titleize
+  def normalize_provided_name
+    self.name = Employee.normalize_name(name)
   end
 
   # returns false if not enough hours

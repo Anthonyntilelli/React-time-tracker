@@ -4,7 +4,7 @@
 class CreateEmployees < ActiveRecord::Migration[6.0]
   def change
     create_table :employees do |t|
-      t.text :name, null: false
+      t.text :name, null: false, index: { unique: true }
       t.string :password_digest, null: false
       t.integer :pto_rate, null: false
       t.integer :pto_current, null: false

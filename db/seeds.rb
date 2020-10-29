@@ -12,9 +12,9 @@ AdminEvent.destroy_all
 puts 'Hiring employees'
 employees = [
   Employee.hire('John Smith', 'password123!', 5, 40, is_admin: true),
-  Employee.hire('John Doe', 'password123!', 10, 80, is_admin: true),
-  Employee.hire('Jane Smith', 'password123!', 12, 40),
-  Employee.hire('John Doe', 'password123!', 10, 80)
+  Employee.hire('Jane Smith', 'password123!', 10, 80, is_admin: true),
+  Employee.hire('John DoE', 'password123!', 12, 40),
+  Employee.hire('Jane Doe', 'password123!', 10, 80)
 ]
 
 puts 'Adding clock events'
