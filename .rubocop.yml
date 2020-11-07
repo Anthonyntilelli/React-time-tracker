@@ -11,6 +11,8 @@ Metrics/AbcSize:
   Max: 19
 Metrics/MethodLength:
   Max: 15
+Metrics/ParameterLists:
+  Max: 6
 
 
 # Opt In Cops

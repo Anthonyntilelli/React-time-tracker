@@ -23,12 +23,13 @@ class Employee < ApplicationRecord
   validates :active, inclusion: { in: [true, false] } # boolean validation
 
   # Create employee without repeating cetain fields and adds hire event
-  def self.hire(name, password, pto_rate, pto_max, is_admin: false)
+  def self.hire(name, password, pto_rate, pto_max, is_admin: false, admin: -1)
+    admin_id = admin.is_a?(Employee) ? admin.id : -1
     new_employee = Employee.new(name: name, password: password, pto_rate: pto_rate,
                                 pto_current: 0, pto_max: pto_max, admin: is_admin, active: true)
     new_employee.save!
     # Create hire admin event
-    new_employee.admin_events.create!(admin: -1, action: 'Hire', reason: 'Initial Hire')
+    new_employee.admin_events.create!(admin: admin_id, action: 'Hire', reason: 'Initial Hire')
     new_employee
   end
 
@@ -107,6 +108,8 @@ class Employee < ApplicationRecord
   # End employees account access and returns hours + pto payment owed.
   # Employee record is not removed.
   def end_employment(admin, reason)
+    raise ArgumentError, 'Employee is not active, cannot re-end employment' unless active
+
     admin_events.create!(admin: admin.id, action: 'EndEmployment', reason: reason)
     # max size of has_secure_password is 72 (HEX(36)) and scramble access password just in case.
     update!(password: SecureRandom.hex(36), active: false)
