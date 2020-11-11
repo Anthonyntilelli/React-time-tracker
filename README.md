@@ -3,26 +3,39 @@
  React/Redux project for Flatiron.
  Project implements a subset of employee time tracking system.
 
-## Environment
+ ## Version
+
+  - Ruby 2.7.0p0
+  - Rail 6.0.3.4
+
+## Environment variable
+
   - RAILS_JWT_ALG - Algorithm used for JWT, it defaults to HS256.
-  - RAILS_JWT_SECRET_KEY - Secret key for JWT Tokens.
+  - RAILS_JWT_SECRET_KEY - Secret key/ String for JWT Tokens.
 
-## Danger enabled Rails Cors to *
 
-* Ruby version
+## Installation
 
-* System dependencies
+The package manager is [gems](https://rubygems.org/) managed by [bundler](https://bundler.io/).
 
-* Configuration
+1. Clone this project
+2. Fill in `.env.example` and rename to `.env`
+3. Run bash below
 
-* Database creation
+```bash
+bundler install
+bundler exec rails db:migrate
+bundler exec rails db:seed # if you want test users
+```
 
-* Database initialization
+## Usage (with React project)
 
-* How to run the test suite
+```bash
+bundler exec rails s -p 3001
+```
+## Cors considerations
 
-* Services (job queues, cache servers, search engines, etc.)
+The Cors for the server is set to near `Allow All`.  If project is use for anything beyond example, it is best to tighten rules.
 
-* Deployment instructions
-
-* ...
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
