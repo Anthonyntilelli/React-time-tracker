@@ -25,12 +25,16 @@ DATES_LIST.each do |start|
 
   employees.each do |emp|
     puts "---> Employee: #{emp.id} #{emp.name}"
-    emp.clock_in(time: start + 12.hours + rand(5..50).seconds)
-    emp.meal_start(time: start + 16.hours + rand(5..50).seconds)
-    emp.meal_end(time: start + 17.hours + rand(5..50).seconds)
-    emp.break_start(time: start + 19.hours + rand(5..50).seconds)
-    emp.break_end(time: start + 19.hours + 30.minutes + rand(5..50).seconds)
-    emp.clock_out(time: start + 21.hours + rand(5..50).seconds)
+    raise 'Next and clockEvent 0 do not match' unless emp.next_clock_event_category == ClockEvent::CATEGORY_ORDER[0]
+
+    emp.create_clock_event(ClockEvent::CATEGORY_ORDER[0], time: start + 12.hours + rand(5..50).seconds)
+    emp.create_clock_event(ClockEvent::CATEGORY_ORDER[1], time: start + 16.hours + rand(5..50).seconds)
+    emp.create_clock_event(ClockEvent::CATEGORY_ORDER[2], time: start + 17.hours + rand(5..50).seconds)
+    raise 'Next and clockEvent 3 do not match' unless emp.next_clock_event_category == ClockEvent::CATEGORY_ORDER[3]
+
+    emp.create_clock_event(ClockEvent::CATEGORY_ORDER[3], time: start + 19.hours + rand(5..50).seconds)
+    emp.create_clock_event(ClockEvent::CATEGORY_ORDER[4], time: start + 19.hours + 30.minutes + rand(5..50).seconds)
+    emp.create_clock_event(ClockEvent::CATEGORY_ORDER[5], time: start + 21.hours + rand(5..50).seconds)
   end
 end
 
@@ -43,22 +47,30 @@ DATES_LIST.each do |start|
   puts "-> Adding Day with Sick #{start}"
   # Skip weekends
   next if start.saturday? || start.sunday?
+  unless sick_employee.next_clock_event_category == ClockEvent::CATEGORY_ORDER[0]
+    raise 'Next and clockEvent 0 do not match'
+  end
 
-  sick_employee.clock_in(time: start + 12.hours + rand(5..50).seconds)
-  sick_employee.meal_start(time: start + 16.hours + rand(5..50).seconds)
+  sick_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[0], time: start + 12.hours + rand(5..50).seconds)
+  sick_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[1], time: start + 16.hours + rand(5..50).seconds)
   puts "--> Attempting to add Sick => Left: #{sick_employee.pto_current})"
   next if sick_employee.sick(5, time: start + 17.hours + rand(5..50).seconds)
 
   # Must work if does not have PTO
   puts 'No Pto left denied'
-  sick_employee.meal_end(time: start + 16.hours + rand(5..50).seconds)
-  sick_employee.break_start(time: start + 19.hours + rand(5..50).seconds)
-  sick_employee.break_end(time: start + 19.hours + 30.minutes + rand(5..50).seconds)
-  sick_employee.clock_out(time: start + 21.hours + rand(5..50).seconds)
+  sick_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[2], time: start + 17.hours + rand(5..50).seconds)
+  unless sick_employee.next_clock_event_category == ClockEvent::CATEGORY_ORDER[3]
+    raise 'Next and clockEvent 3 do not match'
+  end
+
+  sick_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[3], time: start + 19.hours + rand(5..50).seconds)
+  sick_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[4],
+                                   time: start + 19.hours + 30.minutes + rand(5..50).seconds)
+  sick_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[5], time: start + 21.hours + rand(5..50).seconds)
 end
 
 puts 'Add Vacation Employee'
-vacation_employee = Employee.hire('Lacks Joe', 'password123!', 3, 40)
+vacation_employee = Employee.hire('Vacation Joe', 'password123!', 3, 40)
 vacation_employee.modify_pto(Employee.first, 'Testing', current: 40)
 
 puts 'Adding clock with Vacation events'
@@ -67,16 +79,26 @@ DATES_LIST.each do |start|
   # Skip weekends
   next if start.saturday? || start.sunday?
 
-  vacation_employee.clock_in(time: start + 12.hours + rand(5..50).seconds)
-  vacation_employee.meal_start(time: start + 16.hours + rand(5..50).seconds)
+  unless vacation_employee.next_clock_event_category == ClockEvent::CATEGORY_ORDER[0]
+    raise 'Next and clockEvent 0 do not match'
+  end
+
+  vacation_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[0], time: start + 12.hours + rand(5..50).seconds)
+  vacation_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[1], time: start + 16.hours + rand(5..50).seconds)
+
   puts "--> Attempting to add Vacation => Left: #{vacation_employee.pto_current})"
   next if vacation_employee.use_pto(5, time: start + 17.hours + rand(5..50).seconds)
 
   puts 'No Pto left denied'
-  vacation_employee.meal_end(time: start + 16.hours + rand(5..50).seconds)
-  vacation_employee.break_start(time: start + 19.hours + rand(5..50).seconds)
-  vacation_employee.break_end(time: start + 19.hours + 30.minutes + rand(5..50).seconds)
-  vacation_employee.clock_out(time: start + 21.hours + rand(5..50).seconds)
+  vacation_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[2], time: start + 17.hours + rand(5..50).seconds)
+  unless vacation_employee.next_clock_event_category == ClockEvent::CATEGORY_ORDER[3]
+    raise 'Next and clockEvent 3 do not match'
+  end
+
+  vacation_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[3], time: start + 19.hours + rand(5..50).seconds)
+  vacation_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[4],
+                                       time: start + 19.hours + 30.minutes + rand(5..50).seconds)
+  vacation_employee.create_clock_event(ClockEvent::CATEGORY_ORDER[5], time: start + 21.hours + rand(5..50).seconds)
 end
 
 puts "Terminate: vacation employee PayOut: #{vacation_employee.end_employment(

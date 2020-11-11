@@ -68,28 +68,18 @@ class Employee < ApplicationRecord
     true
   end
 
-  def clock_in(time: Time.zone.now)
-    clock_events.create!(category: 'ClockIn', triggered: time, paidOut: false)
+  def next_clock_event_category
+    current_category = clock_events&.last&.category
+    return ClockEvent::CATEGORY_ORDER[0] if current_category.nil?
+
+    current_index = ClockEvent::CATEGORY_ORDER.index(current_category)
+    ClockEvent::CATEGORY_ORDER[(current_index + 1) % ClockEvent::CATEGORY_ORDER.size]
   end
 
-  def clock_out(time: Time.zone.now)
-    clock_events.create!(category: 'ClockOut', triggered: time, paidOut: false)
-  end
+  def create_clock_event(category, time: Time.zone.now)
+    raise ArgumentError, 'category must be a string' unless category.is_a?(String)
 
-  def meal_start(time: Time.zone.now)
-    clock_events.create!(category: 'MealStart', triggered: time, paidOut: false)
-  end
-
-  def meal_end(time: Time.zone.now)
-    clock_events.create!(category: 'MealEnd', triggered: time, paidOut: false)
-  end
-
-  def break_start(time: Time.zone.now)
-    clock_events.create!(category: 'BreakStart', triggered: time, paidOut: false)
-  end
-
-  def break_end(time: Time.zone.now)
-    clock_events.create!(category: 'BreakEnd', triggered: time, paidOut: false)
+    clock_events.create!(category: category, triggered: time, paidOut: false)
   end
 
   # Must have avaible time at request

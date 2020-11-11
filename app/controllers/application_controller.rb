@@ -14,17 +14,13 @@ class ApplicationController < ActionController::API
     token = request.headers['Authorization'].split(' ').last
     decode_settings = { algorithm: JWT_ALG, exp_leeway: 30, nbf_leeway: 30, verify_iat: true }
     decoded_body = JWT.decode(token, JWT_SECRET_KEY, true, decode_settings).first
-    @employee = Employee.find_by!(name: decoded_body['name'])
+    @employee = Employee.find(decoded_body['id'])
     raise ArgumentError, 'Referencing inactive employee.' unless @employee.active
-  rescue ArgumentError,
-         JWT::ImmatureSignature,
-         JWT::ExpiredSignature,
-         JWT::InvalidJtiError,
-         JWT::InvalidIatError,
-         JWT::DecodeError => e
+  rescue ArgumentError, JWT::ImmatureSignature, JWT::ExpiredSignature,
+         JWT::InvalidJtiError, JWT::InvalidIatError, JWT::DecodeError => e
     render json: { message: "JWT ERROR: #{e.message}" }, status: :forbidden
   rescue ActiveRecord::RecordNotFound
-    render json: { message: 'Could not find employee.' }, status: :bad_request
+    render json: { message: 'JWT ERROR: Could not find employee.' }, status: :bad_request
   end
 
   def require_admin

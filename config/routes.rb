@@ -9,5 +9,11 @@ Rails.application.routes.draw do
     put '/employee/:url_id' => 'employees#update'
     patch '/employee/:url_id' => 'employees#update'
     delete '/employee/:url_id' => 'employees#destroy'
+    scope :employee do
+      get '/:url_id/clock' => 'clock#show'
+      get '/:url_id/next_clock' => 'clock#next'
+      post '/:url_id/clock' => 'clock#create'
+      post '/:url_id/pay' => 'clock#pay'
+    end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# EMployee controller
+# Employee controller
 class EmployeesController < ApplicationController
   before_action :require_admin, only: %i[show update create destroy]
   before_action :match_url_id_to_user, only: :self_show
