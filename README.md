@@ -33,6 +33,9 @@ bundler exec rails db:seed # if you want test users
 ```bash
 bundler exec rails s -p 3001
 ```
+
+React front end is [here](https://github.com/Anthonyntilelli/react-time-tracker-frontend).
+
 ## Cors considerations
 
 The Cors for the server is set to near `Allow All`.  If project is use for anything beyond example, it is best to tighten rules.
